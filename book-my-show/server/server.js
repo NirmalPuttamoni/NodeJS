@@ -1,21 +1,18 @@
 const express = require("express");
-const mongoose = require("mongoose")
-
+const mongoose = require("mongoose");
+const connectDB = require("./config/db");
+const userRouter = require("./routes/userRoute");
+const port = process.env.port;
 const app = express();
-
-require("dotenv").config(); // load env variables into process.env
+app.use(express.json())
+// require("dotenv").config(); // load env variables into process.env
 
 /**
  * to read from env file, we use a package called dotenv
  * what it does is, it reads the .env file and populates the process.env object
  */
 
-dbURL = process.env.dbURL;
-
-mongoose.connect(dbURL)
-    .then(function () {
-        console.log("connected to DB")
-    })
+connectDB();
 
 // const connectDB = require("./config/db");
 /**
@@ -28,14 +25,8 @@ mongoose.connect(dbURL)
  * require can be conditonally loaded
  */
 
-// connectDB();
+app.use("/api/users/", userRouter);
 
-app.get("/api/products", (req, res) => {
-    return res.send("Response from api");
-})
-
-
-const port = 8000;
 app.listen(port, () => {
     console.log("Server started at port :", port);
 })

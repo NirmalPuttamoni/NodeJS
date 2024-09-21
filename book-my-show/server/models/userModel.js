@@ -1,5 +1,26 @@
 const mongoose = require("mongoose");
 
-const productSchema = new mongoose.create({
-
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
 })
+
+User = mongoose.model("users", userSchema);
+
+module.exports = User;
