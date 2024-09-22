@@ -2,7 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const connectDB = require("./config/db");
 const userRouter = require("./routes/userRoute");
-const port = process.env.port;
+const movieRouter = require("./routes/movieRoutes");
+const port = process.env.PORT;
 const app = express();
 app.use(express.json())
 // require("dotenv").config(); // load env variables into process.env
@@ -25,7 +26,8 @@ connectDB();
  * require can be conditonally loaded
  */
 
-app.use("/api/users/", userRouter);
+app.use("/api/users", userRouter);
+app.use("/api/moives", movieRouter)
 
 app.listen(port, () => {
     console.log("Server started at port :", port);
