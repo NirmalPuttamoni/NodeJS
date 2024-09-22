@@ -2,21 +2,24 @@ import React from 'react'
 import { Button, Input, Form, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/book-my-show-logo.svg"
-import axios from 'axios';
+import { LoginUser } from '../../api/users';
+import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons"
 
 const Login = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        // console.log(values);
-        // const {email , password} = values;
         try {
-            const data = await axios.post("/api/users/login/", values);
-            message.success(data.data.message);
-            navigate("/");
+            const response = await LoginUser(values);
+            if (response?.success) {
+                message.success(response.message);
+                localStorage.setItem("auth_token", JSON.stringify(response.token));
+                navigate("/");
+            }
         } catch (error) {
-            message.error(error.response.data.message)
+            console.log(error)
+            message.error("Something went wrong");
         }
     }
 
@@ -45,6 +48,8 @@ const Login = () => {
                                 id="email"
                                 name="email"
                                 placeholder="Enter your email"
+                                prefix={<UserOutlined />}
+                                autoComplete="off"
                             ></Input>
                         </Form.Item>
                         <Form.Item
@@ -54,40 +59,37 @@ const Login = () => {
                             className='d-block'
                             rules={[{ required: true, message: "Password is required" }]}
                         >
-                            <Input
+                            <Input.Password
                                 type="password"
                                 id="password"
                                 name="password"
                                 placeholder="Enter your password"
-                            ></Input>
+                                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                                autoComplete="off"
+                            ></Input.Password>
                         </Form.Item>
                         <Form.Item className='d-block'>
                             <Button
                                 type='primary'
                                 htmlType='submit'
-                                style={{ fontSize: "1rem", fontWeight: "600" }}
+                                style={{ fontSize: "1rem", fontWeight: "600", backgroundColor: "rgb(24, 144, 255)" }}
                                 block
                             >Login</Button>
                         </Form.Item>
                     </Form>
-                    <div>
-                        {/* <p>New user?
-                            <Link to="/register">
-                            {" "}Register Here
-                            </Link>
-                        </p> */}
-                    </div>
+                    <Form.Item >
+                        <span style={{ fontSize: "16px" }}>Or</span>
+                    </Form.Item>
                     <Form.Item>
                         <Link to="/register">
                             <Button
                                 type='primary'
                                 htmlType='submit'
-                                style={{ fontSize: "1rem", fontWeight: "600", background: "green" }}
+                                style={{ fontSize: "1rem", fontWeight: "600", backgroundColor: "green" }}
 
                             >Create new account</Button>
                         </Link>
                     </Form.Item>
-
                 </section>
             </main>
         </>

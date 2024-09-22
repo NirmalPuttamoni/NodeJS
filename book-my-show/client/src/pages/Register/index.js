@@ -1,9 +1,26 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import React from 'react'
 import { Link } from 'react-router-dom';
 import Logo from "../../assets/book-my-show-logo.svg"
+import { RegisterUser } from '../../api/users';
 
 const Register = () => {
+  const onFinish = async (values) => {
+    try {
+      const response = await RegisterUser(values);
+      console.log("response : ", response)
+      if (response?.success) {
+        //success
+        message.success(response.message);
+      } else {
+        // error
+        message.error(response.message);
+      }
+    } catch (error) {
+      console.log(error)
+      message.error("Something went wrong");
+    }
+  }
   return (
     <>
       <main className="App-header">
@@ -13,7 +30,7 @@ const Register = () => {
           </span>
         </h1>
         <section className='mw-500 text-center px-3'>
-          <Form layout="vertical">
+          <Form layout="vertical" onFinish={onFinish}>
             <Form.Item
               label="Name"
               htmlFor="name"
@@ -82,7 +99,7 @@ const Register = () => {
                 htmlType='submit'
                 style={{ fontSize: "1rem", fontWeight: "600" }}
                 block
-              >Login</Button>
+              >Register</Button>
             </Form.Item>
           </Form>
           <div>
