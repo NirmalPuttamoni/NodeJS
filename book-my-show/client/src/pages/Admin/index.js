@@ -1,9 +1,27 @@
-import React from 'react'
+import React from "react";
+import { Tabs } from "antd";
+import MovieList from "./MovieList";
+// import TheatresTable from "./TheatresTable";
 
-const Admin = () => {
+function Admin() {
+    const tabItems = [
+        {
+            key: "1",
+            label: "Movies",
+            children: <MovieList />,
+        },
+        // {
+        //     key: "2",
+        //     label: "Theatres",
+        //     children: <TheatresTable />,
+        // },
+    ];
     return (
-        <div>Admin</div>
-    )
+        <div className="admin-page-container">
+            <h1>Admin Page</h1>
+            <Tabs items={tabItems} />
+        </div>
+    );
 }
 
 export default Admin;

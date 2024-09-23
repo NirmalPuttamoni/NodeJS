@@ -391,3 +391,7 @@ hr {
     margin-bottom: 1rem;
   }
 }
+
+.admin-page-container{
+  padding: 0 10px;
+}
