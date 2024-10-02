@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom';
-import { HomeOutlined, UserOutlined, ProfileOutlined, LogoutOutlined } from "@ant-design/icons"
+import { HomeOutlined, ProfileOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons"
 import { hideLoading, showLoading } from '../redux/loaderSlice';
 import { GetCurrentUser } from '../api/users';
 import { setUser } from '../redux/userSlice';
@@ -18,13 +18,13 @@ const ProtectedRoute = ({ children }) => {
     const navItems = [
         {
             key: "home",
-            label: "Home",
-            icon: <HomeOutlined />,
+            label: (<Link to="/">Home</Link>),
+            icon: <HomeOutlined style={{ color: "#d71920" }} />,
         },
         {
             key: "user",
             label: `${user ? user.name : ""}`,
-            icon: <UserOutlined />,
+            icon: <UserOutlined style={{ color: "#d71920" }} />,
             children: [
                 {
                     key: "myProfile",
@@ -43,7 +43,7 @@ const ProtectedRoute = ({ children }) => {
                             My Profile
                         </span>
                     ),
-                    icon: <ProfileOutlined />,
+                    icon: <ProfileOutlined style={{ color: "#d71920" }} />,
                 },
                 {
                     key: "logout",
@@ -57,7 +57,7 @@ const ProtectedRoute = ({ children }) => {
                             Logout
                         </Link>
                     ),
-                    icon: <LogoutOutlined />,
+                    icon: <LogoutOutlined style={{ color: "#d71920" }} />,
                 },
             ],
         },
@@ -86,7 +86,7 @@ const ProtectedRoute = ({ children }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const { Header, Footer, Sider, Content } = Layout;
+    const { Header } = Layout;
 
     return (
         user && (
@@ -103,12 +103,13 @@ const ProtectedRoute = ({ children }) => {
                             alignItems: "center",
                         }}
                     >
-                        {/* <h3 className="text-white m-0" style={{ color: "black" }}>Book My Show</h3> */}
                         <span
                             style={{
                                 display: "flex",
                             }}
-                        ><img src={bookMyShowLogo} alt="book-my-show-logo" /></span>
+                        >
+                            <img src={bookMyShowLogo} alt="book-my-show-logo" />
+                        </span>
                         <Menu items={navItems} mode="horizontal" theme="dark" />
                     </Header>
                     <div style={{ padding: 4, minHeight: "380px", background: "#fff" }}>{children}</div>

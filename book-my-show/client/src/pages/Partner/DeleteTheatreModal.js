@@ -1,13 +1,14 @@
-import { Modal, message } from "antd";
-import { deleteMovie } from "../../api/movies";
-import { showLoading, hideLoading } from "../../redux/loaderSlice";
+import { message, Modal } from "antd";
+import React from "react";
 import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "../../redux/loaderSlice";
+import { deleteTheatre } from "../../api/theatres";
 
-const DeleteMovieModal = ({
+const DeleteTheatreModal = ({
   isDeleteModalOpen,
   setIsDeleteModalOpen,
-  selectedMovie,
-  setSelectedMovie,
+  selectedTheatre,
+  setSelectedTheatre,
   getData,
 }) => {
   const dispatch = useDispatch();
@@ -15,15 +16,15 @@ const DeleteMovieModal = ({
   const handleOk = async () => {
     try {
       dispatch(showLoading());
-      const movieId = selectedMovie._id;
-      const response = await deleteMovie({ movieId });
+      const theatreId = selectedTheatre._id;
+      const response = await deleteTheatre(theatreId);
       if (response.success) {
         message.success(response.message);
         getData();
       } else {
         message.error(response.message);
       }
-      setSelectedMovie(null);
+      setSelectedTheatre(null);
       setIsDeleteModalOpen(false);
       dispatch(hideLoading());
     } catch (err) {
@@ -35,9 +36,8 @@ const DeleteMovieModal = ({
 
   const handleCancel = () => {
     setIsDeleteModalOpen(false);
-    setSelectedMovie(null);
+    setSelectedTheatre(null);
   };
-
   return (
     <Modal
       title="Delete Movie?"
@@ -45,7 +45,9 @@ const DeleteMovieModal = ({
       onOk={handleOk}
       onCancel={handleCancel}
     >
-      <p className="pt-3 fs-18">Are you sure you want to delete this movie?</p>
+      <p className="pt-3 fs-18">
+        Are you sure you want to delete this theatre?
+      </p>
       <p className="pb-3 fs-18">
         This action can't be undone and you'll lose this movie data.
       </p>
@@ -53,4 +55,4 @@ const DeleteMovieModal = ({
   );
 };
 
-export default DeleteMovieModal;
+export default DeleteTheatreModal;

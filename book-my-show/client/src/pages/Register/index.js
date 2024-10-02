@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Radio } from 'antd';
 import React from 'react'
 import { Link } from 'react-router-dom';
 import Logo from "../../assets/book-my-show-logo.svg"
@@ -72,12 +72,12 @@ const Register = () => {
               className='d-block'
               rules={[{ required: true, message: "Password is required" }]}
             >
-              <Input
+              <Input.Password
                 type="password"
                 id="password"
                 name="password"
                 placeholder="Enter your password"
-              ></Input>
+              ></Input.Password>
             </Form.Item>
             <Form.Item
               label="Confirm Password"
@@ -86,12 +86,12 @@ const Register = () => {
               className='d-block'
               rules={[{ required: true, message: "Confirm Password is required" }]}
             >
-              <Input
+              <Input.Password
                 type="password"
                 id="confirm_password"
                 name="confirm_password"
                 placeholder="Re-enter your password"
-              ></Input>
+              ></Input.Password>
             </Form.Item>
             <Form.Item className='d-block'>
               <Button
@@ -100,6 +100,21 @@ const Register = () => {
                 style={{ fontSize: "1rem", fontWeight: "600" }}
                 block
               >Register</Button>
+            </Form.Item>
+            <Form.Item
+              label="Register as a Partner"
+              htmlForm="role"
+              name="role"
+              className="d-block tet-center"
+              initialValue={"user"}
+              rules={[{ required: true, message: "Please select an option" }]}
+            >
+              <div className="d-flex justify-content-start">
+                <Radio.Group name="radiogroup" className="flex-start">
+                  <Radio value={"partner"}>Yes</Radio>
+                  <Radio value={"user"}>No</Radio>
+                </Radio.Group>
+              </div>
             </Form.Item>
           </Form>
           <div>
