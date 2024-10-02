@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken")
 
 const createUser = async (req, res) => {
     const body = req.body;
-    console.log(body)
+    // console.log(body)
     try {
 
         const existingUser = await User.findOne({ email: body.email });
@@ -61,11 +61,11 @@ const getCurrentUser = async (req, res) => {
     try {
         // console.log("==========", req.url, req.method)
         // console.log("token ", req.headers["authorization"])
-        console.log(req.headers.authorization)
+        // console.log(req.headers.authorization)
         const user = await User.findById(req?.body?.userId).select("-password");
         res.send({ success: true, message: "You are authenticated", data: user });
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(500).json({ message: `Internal server error ${error.message}` })
     }
 }

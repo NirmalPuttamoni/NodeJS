@@ -35,7 +35,7 @@ const addMovie = async (req, res) => {
 
 const updateMovie = async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const updatedMovie = await Movies.findByIdAndUpdate(req.body.movieId, req.body, { new: true });
         if (updatedMovie) {
             res.send({
