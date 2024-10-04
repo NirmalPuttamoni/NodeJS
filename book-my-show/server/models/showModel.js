@@ -22,7 +22,7 @@ const showSchema = new mongoose.Schema(
       ref: "theatres",
       required: true,
     },
-    bookedSeats: {type: Array, default: []}
+    bookedSeats: { type: Array, default: [] },
   },
   { timestamps: true }
 );

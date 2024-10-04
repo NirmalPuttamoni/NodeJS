@@ -1,24 +1,21 @@
 const express = require("express");
 const movieRouter = express.Router();
 const Movies = require("../models/movieModel")
-const { addMovie, getAllMovies, updateMovie, deleteMovie } = require("../controllers/movieController");
+const { addMovie, getAllMovies, updateMovie, deleteMovie, getMovieById } = require("../controllers/movieController");
 
-const auth = (req, res, next) => {
-    console.log(" auth ");
-    next();
-}
+// get all movies
+movieRouter.get("/get-all-movies", getAllMovies);
 
-//add a movie
-movieRouter.get("/get-all-movies", auth, getAllMovies);
-
-//add a movie
-movieRouter.post("/add-movie", auth, addMovie);
+// add a movie
+movieRouter.post("/add-movie", addMovie);
 
 // update a movie
 movieRouter.put("/update-movie", updateMovie);
 
-// update a movie
+// delete a movie
 movieRouter.delete("/delete-movie", deleteMovie);
 
+// get movie by id
+movieRouter.get("/get-movie/:id", getMovieById);
 
 module.exports = movieRouter;

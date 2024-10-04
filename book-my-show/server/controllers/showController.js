@@ -30,8 +30,8 @@ const deleteShow = async (req, res) => {
 
 const updateShow = async (req, res) => {
   const id = req?.params?.id;
-  console.log("id", id)
-  console.log("body", req.body)
+  console.log("id", id);
+  console.log("body", req.body);
   try {
     if (!id || !mongoose.isValidObjectId(id)) {
       return res
@@ -47,7 +47,7 @@ const updateShow = async (req, res) => {
       res.send({ success: false, message: "Failed to update show" });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).send({ success: false, message: error.message });
   }
 };
@@ -59,67 +59,75 @@ const updateShow = async (req, res) => {
  */
 
 const getAllShowsByTheatreId = async (req, res) => {
-    // console.log(req.params)
+  // console.log(req.params)
   try {
-    const shows = await Show.find({ theatre: req.params.id }).populate(
-      "movie"
-    );
+    const shows = await Show.find({ theatre: req.params.id }).populate("movie");
     if (shows.length === 0) {
       return res.send({ success: true, message: "No shows found", data: [] });
     }
     res.send({ message: "Shows fetched", success: true, data: shows });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).send({ message: error.message, success: false });
   }
 };
 
 const getAllTheatressByMovie = async (req, res) => {
-    try {
-        const {movie, date} = req.params;
-      const shows = await Show.find({ movie, date }).populate(
-        "theatre"
+  try {
+    const { movie, date } = req.params;
+    const shows = await Show.find({ movie, date }).populate("theatre");
+    // const uniqueTheatres2 = await Show.distinct("theatre")
+    // console.log("uniqueTheatres2", uniqueTheatres2)
+
+    // filter out the unique theatres
+    const uniqueTheatres = []; // [{A:{9pm , 11 PM}}, {B:{9pm}}]
+    shows.forEach((show) => {
+      let isTheatre = uniqueTheatres.find(
+        (theatre) => theatre._id === show.theatre._id
       );
-      const uniqueTheatres2 = await Show.distinct("theatre")
-      console.log(uniqueTheatres2)
-
-
-      //filter out unique theatres
-      const uniqueTheatres = [];
-      shows.forEach(show => {
-        let isTheatre = uniqueTheatres.find(theatre => {
-            theatre._id == show.theatre._id
-        })
-        if(!isTheatre){
-            const showsOfThisTheatre = shows.filter(showObj => {
-                showObj.theatre._id == show.theatre._id
-            })
-        }
+      if (!isTheatre) {
+        // add the theatre along with the all shows
+        const showsOfThisTheatre = shows.filter(
+          (showObj) => showObj.theatre._id == show.theatre._id
+        );
         uniqueTheatres.push({
-            ...show.theatre._doc,
-            shows: showsOfThisTheatre
-        })
-      })
-      console.log(uniqueTheatres2)
-    //   if (shows.length === 0) {
-    //     return res.send({ success: true, message: "No shows found", data: [] });
-    //   }
-    //   res.send({ message: "Shows fetched", success: true, data: shows });
-    } catch (error) {
-      res.status(500).send({ message: error.message, success: false });
-    }
-  };
+          ...show.theatre._doc,
+          shows: showsOfThisTheatre,
+        });
+      }
+    });
+    // console.log("uniqueTheatres", uniqueTheatres)
+    res.send({
+      message: "Theatres found",
+      success: true,
+      data: uniqueTheatres,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: error.message, success: false });
+  }
+};
 
 const getShowById = async (req, res) => {
-    try {
-        const show = await Show.findById(req?.params?.id).populate("movies").populate("theatres");
-        if(!show){
-            return res.send({success: true, message: "No show found", data: []})
-        }
-        res.send({success: true, message: "Show found", data: show});
-    } catch (error) {
-        res.status(500).send({ message: error.message, success: false });
+  console.log("")
+  try {
+    const show = await Show.findById(req?.params?.id)
+      .populate("movie")
+      .populate("theatre");
+    if (!show) {
+      return res.send({ success: true, message: "No show found", data: [] });
     }
-}
+    res.send({ success: true, message: "Show found", data: show });
+  } catch (error) {
+    res.status(500).send({ message: error.message, success: false });
+  }
+};
 
-module.exports = { addShow, deleteShow, updateShow, getAllShowsByTheatreId, getAllTheatressByMovie, getShowById };
+module.exports = {
+  addShow,
+  deleteShow,
+  updateShow,
+  getAllShowsByTheatreId,
+  getAllTheatressByMovie,
+  getShowById,
+};

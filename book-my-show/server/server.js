@@ -27,12 +27,9 @@ connectDB();
  * require can be used anywhere in the file
  * require can be conditonally loaded
  */
-const auth = (req, res, next) => {
-    console.log(" auth ");
-    next();
-}
+
 app.use("/api/users", userRouter);
-app.use("/api/movies", auth, movieRouter)
+app.use("/api/movies", movieRouter)
 app.use("/api/theatres", theatreRouter)
 app.use("/api/shows", showRouter)
 
