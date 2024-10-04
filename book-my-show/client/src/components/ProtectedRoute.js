@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    console.log(user)
+    // console.log(user)
 
     const navItems = [
         {
@@ -68,7 +68,7 @@ const ProtectedRoute = ({ children }) => {
             try {
                 dispatch(showLoading());
                 const response = await GetCurrentUser();
-                console.log(response);
+                // console.log(response);
                 dispatch(setUser(response.data));
                 dispatch(hideLoading());
             } catch (error) {
@@ -96,7 +96,7 @@ const ProtectedRoute = ({ children }) => {
                         style={{
                             position: "sticky",
                             top: 0,
-                            zIdnex: 1,
+                            zIndex: 100,
                             width: "100%",
                             display: "flex",
                             justifyContent: "center",

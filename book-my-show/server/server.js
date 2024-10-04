@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const connectDB = require("./config/db");
 const userRouter = require("./routes/userRouter");
+const showRouter = require("./routes/showRouter");
 const movieRouter = require("./routes/movieRouter");
 const theatreRouter = require("./routes/theatreRouter");
 const port = process.env.PORT;
@@ -33,6 +34,7 @@ const auth = (req, res, next) => {
 app.use("/api/users", userRouter);
 app.use("/api/movies", auth, movieRouter)
 app.use("/api/theatres", theatreRouter)
+app.use("/api/shows", showRouter)
 
 app.listen(port, () => {
     console.log("Server started at port :", port);

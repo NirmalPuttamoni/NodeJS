@@ -1,35 +1,103 @@
-import React, { useEffect } from 'react'
-import { message } from "antd"
-import { Link } from 'react-router-dom';
-import { GetCurrentUser } from '../../api/users';
+import React, { useEffect, useState } from "react";
+import { Col, Input, message, Row } from "antd";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { SearchOutlined } from "@ant-design/icons";
+import { hideLoading, showLoading } from "../../redux/loaderSlice";
+import moment from "moment";
+import { getAllMovies } from "../../api/movies";
 
 const Home = () => {
-  // useEffect(() => {
-  //   console.log("Home use effect");
-  //   const fecthUser = async () => {
-  //     const response = await GetCurrentUser();
-  //     if (response && response.success) {
-  //       message.success(response.message)
-  //     } else {
-  //       message.error(response.message);
-  //     }
-  //   };
-  //   fecthUser();
-  // })
+  const [movies, setMovies] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const getData = async () => {
+    try {
+      dispatch(showLoading());
+      const respone = await getAllMovies();
+      dispatch(hideLoading());
+      if (respone && respone.success) {
+        setMovies(respone?.data);
+        message.success("Movies fetched");
+      } else {
+        message.error(respone.message);
+      }
+    } catch (error) {
+      console.log(error);
+      message.error(error.message);
+      dispatch(hideLoading());
+    }
+  };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
   return (
-    <div>
-      <h1>Home Page</h1>
-      {/* <button onClick={changeHandler}>Get Users</button> */}
-      <br />
-      <Link to="/login">Login</Link>
-      <div>
-        <h1>Users</h1>
-        <div>
-          {/* {dataFromBackend.map(item => <h5>{item.name}</h5>)} */}
-        </div>
-      </div>
-    </div>
-  )
-}
+    <>
+      <Row className="justify-content-center mb-5">
+        <Col xs={24} lg={12}>
+          <Input
+            placeholder="Type here to search for a movie"
+            onChange={handleSearch}
+            prefix={<SearchOutlined />}
+            style={{ position: "static" }}
+          />
+        </Col>
+      </Row>
+      <Row
+        className="justify-content-center"
+        // gutter={{ xs: 12, sm: 18, md: 24, lg: 32 }}
+        style={{ gap: "0 24px" }}
+      >
+        {movies
+          .filter((movie) =>
+            movie.title.toLowerCase().includes(searchText.toLocaleLowerCase())
+          )
+          .map((movie) => {
+            return (
+              <Col key={movie._id} span={{ xs: 24, sm: 24, md: 12, lg: 10 }}>
+                <div className="text-center">
+                  <img
+                    src={movie.poster}
+                    alt={movie.title}
+                    width={200}
+                    height={250}
+                    style={{ borderRadius: "8px", objectFit: "cover" }}
+                    className="cursor-pointer"
+                    onClick={() => {
+                      navigate(
+                        `/movie/${movie._id}?date=${moment().format(
+                          "YYYY-MM-DD"
+                        )}`
+                      );
+                    }}
+                  />
+                  <h3
+                    className="cursor-pointer"
+                    onClick={() => {
+                      navigate(
+                        `/movie/${movie._id}?date=${moment().format(
+                          "YYYY-MM-DD"
+                        )}`
+                      );
+                    }}
+                  >
+                    {movie.title}
+                  </h3>
+                </div>
+              </Col>
+            );
+          })}
+      </Row>
+    </>
+  );
+};
 
 export default Home;

@@ -4,9 +4,11 @@ const jwt = require("jsonwebtoken")
 
 const createUser = async (req, res) => {
     const body = req.body;
-    // console.log(body)
+    console.log(body)
     try {
-
+        if(body.password !== body.confirm_password){
+            return res.send({message: "Password and Confirm Password did not match", success: false});
+        }
         const existingUser = await User.findOne({ email: body.email });
         if (existingUser) {
             return res.send({ message: `User ${body.name} already exists`, success: false });

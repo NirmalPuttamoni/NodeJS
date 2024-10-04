@@ -108,6 +108,10 @@ button {
   justify-content: end;
 }
 
+.justify-content-center {
+  justify-content: center;
+}
+
 .fs-12 {
   font-size: 12px;
 }
