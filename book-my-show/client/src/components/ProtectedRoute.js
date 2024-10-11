@@ -73,11 +73,15 @@ const ProtectedRoute = ({ children }) => {
       try {
         dispatch(showLoading());
         const response = await GetCurrentUser();
-        // console.log(response);
-        dispatch(setUser(response.data));
+
+        if(response?.success){
+          dispatch(setUser(response.data));
+        }else{
+            navigate("/login")
+        }
         dispatch(hideLoading());
       } catch (error) {
-        console.log(error);
+        // console.log(error.message);
         dispatch(hideLoading());
         message.error(error.message);
       }

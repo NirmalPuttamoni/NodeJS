@@ -219,7 +219,8 @@ hr {
   background-color: #ddd;
   color: #999;
   border-color: #ddd;
-  cursor: not-allowed;
+  /* cursor: not-allowed; */
+  pointer-events: none;
 }
 
 .screen-div {

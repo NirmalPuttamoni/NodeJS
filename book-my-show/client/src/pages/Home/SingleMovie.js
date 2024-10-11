@@ -24,7 +24,7 @@ const SingleMovie = () => {
     try {
       dispatch(showLoading());
       const response = await getMovieById(params.id);
-      if (response.success) {
+      if (response?.success) {
         setMovie(response.data);
       } else {
         message.error(response.message);
@@ -40,7 +40,7 @@ const SingleMovie = () => {
     try {
       dispatch(showLoading());
       const response = await getAllTheatresByMovie({ movie: params.id, date });
-      if (response.success) {
+      if (response?.success) {
         setTheatres(response.data);
       } else {
         message.error(response.message);
@@ -59,6 +59,7 @@ const SingleMovie = () => {
 
   useEffect(() => {
     getAllTheatres();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   return (

@@ -22,7 +22,7 @@ const TheatreList = () => {
     try {
       dispatch(showLoading());
       const response = await getAllTheatres(user._id);
-      if (response.success) {
+      if (response?.success) {
         const allTheatres = response.data;
         setTheatres(
           allTheatres?.map((item) => {
@@ -33,7 +33,7 @@ const TheatreList = () => {
         message.error(response.message);
       }
     } catch (error) {
-      dispatch(hideLoading);
+      dispatch(hideLoading());
       message.error(error.message);
     }
   };
@@ -118,7 +118,7 @@ const TheatreList = () => {
   ];
 
   return (
-    <div className="d-flex justify-content-end">
+    <div>
       <Button
         type="primary"
         onClick={() => {
@@ -153,6 +153,7 @@ const TheatreList = () => {
           isShowModalOpen={isShowModalOpen}
           setIsShowModalOpen={setIsShowModalOpen}
           selectedTheatre={selectedTheatre}
+          setSelectedTheatre={setSelectedTheatre}
         />
       )}
     </div>

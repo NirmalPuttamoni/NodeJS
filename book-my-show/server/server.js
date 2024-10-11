@@ -5,6 +5,7 @@ const userRouter = require("./routes/userRouter");
 const showRouter = require("./routes/showRouter");
 const movieRouter = require("./routes/movieRouter");
 const theatreRouter = require("./routes/theatreRouter");
+const bookingRouter = require("./routes/bookingRouter");
 const port = process.env.PORT;
 const app = express();
 app.use(express.json())
@@ -32,6 +33,7 @@ app.use("/api/users", userRouter);
 app.use("/api/movies", movieRouter)
 app.use("/api/theatres", theatreRouter)
 app.use("/api/shows", showRouter)
+app.use("/api/bookings", bookingRouter)
 
 app.listen(port, () => {
     console.log("Server started at port :", port);

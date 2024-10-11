@@ -3,7 +3,8 @@ import axios from "axios";
 const axiosInstance = axios.create({
     headers: {
         "Content-Type": "application/json",
-    }
+    },
+    baseURL: "/",
 });
 
 // request interceptor
@@ -17,7 +18,6 @@ axiosInstance.interceptors.request.use(
         return config;
     },
     function (error) {
-        console.log("===================================")
         return Promise.reject(error);
     }
 );

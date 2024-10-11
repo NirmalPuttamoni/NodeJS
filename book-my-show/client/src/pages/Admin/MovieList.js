@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, message, Table } from 'antd'
 import { useDispatch } from 'react-redux';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { showLoading } from '../../redux/loaderSlice';
+import { hideLoading, showLoading, homeLoader } from '../../redux/loaderSlice';
 import { getAllMovies } from '../../api/movies';
 import moment from "moment";
 import MovieForm from './MovieForm';
@@ -51,25 +51,27 @@ const MovieList = () => {
 
     const getData = async () => {
         try {
-            dispatch(showLoading);
+            dispatch(showLoading());
             const response = await getAllMovies();
             const allMovies = response?.data;
-            message.success(response.message);
+            message.success(response?.message);
             setMovies(allMovies);
         } catch (error) {
+            dispatch(hideLoading());
             console.log(error)
         }
     }
-    console.log("selectedMovie in list", selectedMovie)
+    // console.log("selectedMovie in list", selectedMovie)
     useEffect(() => {
         getData()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
+    // console.log(movies)
     const columns = [
         {
             title: "Poster",
             dataIndex: "poster",
+            key:"poster",
             render: (text, data) => {
                 return (<img
                     src={data.poster}
@@ -82,30 +84,37 @@ const MovieList = () => {
         },
         {
             title: "Movie Name",
-            dataIndex: "title"
+            dataIndex: "title",
+            key:"title"
         },
         {
             title: "Description",
-            dataIndex: "description"
+            dataIndex: "description",
+            key:"description",
+            width: "600px"
         },
         {
             title: "Duration",
             dataIndex: "duration",
+            key:"duration",
             render: (text) => {
                 return `${text} Mins`;
             }
         },
         {
             title: "Genre",
-            dataIndex: "genre"
+            dataIndex: "genre",
+            key:"genre",
         },
         {
             title: "Language",
-            dataIndex: "language"
+            dataIndex: "language",
+            key:"language",
         },
         {
             title: "Release Date",
             dataIndex: "releaseDate",
+            key:"releaseDate",
             render: (text, data) => {
                 return moment(data.releaseDate).format("DD-MM-YYYY");
             }
@@ -113,6 +122,7 @@ const MovieList = () => {
         {
             title: "Action",
             dataIndex: "action",
+            key:"action",
             render: (text, data) => {
                 // console.log("data ",data)
                 return (
@@ -142,7 +152,7 @@ const MovieList = () => {
                 setIsModalOpen(true);
                 setFormType("add");
             }}>Add Movie</Button>
-            <Table dataSource={movies} columns={columns}></Table>
+            <Table dataSource={movies} columns={columns} rowKey="_id"></Table>
             {isModalOpen && (
                 <MovieForm
                     isModalOpen={isModalOpen}

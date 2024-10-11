@@ -36,6 +36,7 @@ const Register = () => {
         </h1>
         <section className="mw-500 text-center px-3">
           <Form
+            form={form}
             layout="vertical"
             onFinish={onFinish}
             initialValues={{ role: "user" }}
@@ -133,20 +134,26 @@ const Register = () => {
               className="d-block text-center"
               rules={[{ required: true, message: "Please select an option" }]}
             >
-              <div className="d-flex justify-content-start">
-                <Radio.Group name="role" className="flex-start" defaultValue={"user"}>
-                  <Radio name="role" value={"partner"} >Yes</Radio>
-                  <Radio name="role" value={"user"} >No</Radio>
+              <div className="d-flex justify-content-center">
+                <Radio.Group
+                  name="role"
+                  className="flex-start"
+                  defaultValue={"user"}
+                >
+                  <Radio name="role" value={"partner"}>
+                    Yes
+                  </Radio>
+                  <Radio name="role" value={"user"}>
+                    No
+                  </Radio>
                 </Radio.Group>
               </div>
             </Form.Item>
           </Form>
-          <div>
-            <p>
-              Already a user?
-              <Link to="/login"> Login Here</Link>
-            </p>
-          </div>
+          <Form.Item>
+            <span>Already a user?</span>
+            <Link to="/login"> Login Here</Link>
+          </Form.Item>
         </section>
       </main>
     </>

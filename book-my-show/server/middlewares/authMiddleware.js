@@ -12,9 +12,9 @@ const auth = (req, res, next) => {
     } catch (error) {
         // console.log(error)
         if (error.name === "TokenExpiredError") {
-            res.status(401).send({ message: "Token expired" });
+            res.status(401).send({ success:false, message: "Token expired" });
         } else {
-            res.status(401).send({ message: "Token is invalid" });
+            res.status(401).send({ success:false, message: "Token is invalid" });
         }
     }
 }

@@ -28,7 +28,31 @@ export const GetCurrentUser = async () => {
         const response = await axiosInstance.get("/api/users/get-current-user");
         return response.data;
     } catch (error) {
-        console.log(error);
-        return message.error(error?.response?.data?.message);
+        // console.log(error);
+        return error?.response?.data;
+        // return message.error(error?.response?.data?.message);
     }
 }
+
+export const ForgotPassword = async (value) => {
+    try {
+      const response = await axiosInstance.patch(
+        "api/users/forgot-password",
+        value
+      );
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return err.response.data;
+    }
+  };
+  
+  export const ResetPassword = async (value, email) => {
+    try {
+      const response = await axiosInstance.patch(`api/users/reset-password/${email}`, value);
+      return response.data;
+    } catch (err) {
+      console.log(err.response.data);
+      return err.response.data;
+    }
+  };

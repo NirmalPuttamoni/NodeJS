@@ -74,14 +74,34 @@ const getAllShowsByTheatreId = async (req, res) => {
 
 const getAllTheatressByMovie = async (req, res) => {
   try {
-    const { movie, date } = req.params;
+    const { movie, date } = req?.params;
     const shows = await Show.find({ movie, date }).populate("theatre");
-    // const uniqueTheatres2 = await Show.distinct("theatre")
-    // console.log("uniqueTheatres2", uniqueTheatres2)
+
+    // const uniqueTheatres = await Show.aggregate([
+    //   // Unwind the 'theatre' field to create a document for each show
+    //   { $unwind: "$theatre" },
+    //   // Group the shows by the theatre '_id'
+    //   {
+    //     $group: {
+    //       _id: "$theatre._id",
+    //       theatre: { $first: "$theatre" },
+    //       shows: { $push: "$ROOT" },
+    //     },
+    //   },
+    //   // Project the desired fields
+    //   {
+    //     $project: {
+    //       _id: "$_id",
+    //       name: "$theatre.name",
+    //       address: "$theatre.address",
+    //       shows: "$shows",
+    //     },
+    //   },
+    // ]);
 
     // filter out the unique theatres
     const uniqueTheatres = []; // [{A:{9pm , 11 PM}}, {B:{9pm}}]
-    shows.forEach((show) => {
+    shows?.forEach((show) => {
       let isTheatre = uniqueTheatres.find(
         (theatre) => theatre._id === show.theatre._id
       );
@@ -109,7 +129,6 @@ const getAllTheatressByMovie = async (req, res) => {
 };
 
 const getShowById = async (req, res) => {
-  console.log("")
   try {
     const show = await Show.findById(req?.params?.id)
       .populate("movie")

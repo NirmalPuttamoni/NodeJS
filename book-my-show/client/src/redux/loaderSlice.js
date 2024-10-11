@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const loaderSlice = createSlice({
     name: "loaders",
     initialState: {
-        loading: false
+        loading: false,
+        isImageLoading: false
     },
     reducers: {
         showLoading: (state) => {
@@ -11,9 +12,12 @@ const loaderSlice = createSlice({
         },
         hideLoading: (state) => {
             state.loading = false;
+        },
+        imageLoader: (state, {payload}) => {
+            state.isImageLoading = payload;
         }
     }
 })
 
-export const { showLoading, hideLoading } = loaderSlice.actions;
+export const { showLoading, hideLoading, imageLoader } = loaderSlice.actions;
 export default loaderSlice.reducer;

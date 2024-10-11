@@ -57,7 +57,7 @@ const TheatresTable = () => {
       render: (text, data) => {
         return (
           <div>
-            {data.isActive ? (
+            {data?.isActive ? (
               <Button onClick={() => handleStatusChange(data)}>Block</Button>
             ) : (
               <Button onClick={() =>handleStatusChange(data)}>Approve</Button>
@@ -72,7 +72,7 @@ const TheatresTable = () => {
     try {
       dispatch(showLoading());
       const response = await getAllTheatresForAdmin();
-      if (response.success) {
+      if (response?.success) {
         const allTheatres = response.data;
         setTheatres(
           allTheatres?.map((item) => {
@@ -99,7 +99,7 @@ const TheatresTable = () => {
         isActive: !theatre.isActive,
       };
       const response = await updateTheatre(values);
-      if (response.success) {
+      if (response?.success) {
         message.success(response.message);
         getData();
       } else {

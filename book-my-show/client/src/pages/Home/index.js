@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Col, Input, message, Row } from "antd";
+import { Col, Input, message, Row, Skeleton } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SearchOutlined } from "@ant-design/icons";
-import { hideLoading, showLoading } from "../../redux/loaderSlice";
+import { imageLoader } from "../../redux/loaderSlice";
 import moment from "moment";
 import { getAllMovies } from "../../api/movies";
 
@@ -12,25 +12,29 @@ const Home = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isImageLoading } = useSelector((state) => state.loaders);
 
   const getData = async () => {
     try {
-      dispatch(showLoading());
-      const respone = await getAllMovies();
-      dispatch(hideLoading());
-      if (respone && respone.success) {
-        setMovies(respone?.data);
+      dispatch(imageLoader(true));
+
+      const response = await getAllMovies();
+      if (response?.success) {
+        setMovies(response.data);
         message.success("Movies fetched");
       } else {
-        message.error(respone.message);
+        message.error(response.message);
       }
+      setTimeout(() => {
+        dispatch(imageLoader(false));
+      }, 1500);
     } catch (error) {
       console.log(error);
       message.error(error.message);
-      dispatch(hideLoading());
+      // dispatch(imageLoading(false));
     }
   };
-
+  // console.log(isImageLoading);
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,39 +61,46 @@ const Home = () => {
         style={{ gap: "0 24px" }}
       >
         {movies
-          .filter((movie) =>
+          ?.filter((movie) =>
             movie.title.toLowerCase().includes(searchText.toLocaleLowerCase())
           )
           .map((movie) => {
             return (
               <Col key={movie._id} span={{ xs: 24, sm: 24, md: 12, lg: 10 }}>
                 <div className="text-center">
-                  <img
-                    src={movie.poster}
-                    alt={movie.title}
-                    width={200}
-                    height={250}
-                    style={{ borderRadius: "8px", objectFit: "cover" }}
-                    className="cursor-pointer"
-                    onClick={() => {
-                      navigate(
-                        `/movie/${movie._id}?date=${moment().format(
-                          "YYYY-MM-DD"
-                        )}`
-                      );
-                    }}
-                  />
+                  {isImageLoading ? (
+                    <Skeleton.Image
+                      style={{ width: 200, height: 250 }}
+                      active={true}
+                    />
+                  ) : (
+                    <img
+                      src={movie?.poster}
+                      alt={movie?.title}
+                      width={200}
+                      height={250}
+                      style={{ borderRadius: "8px", objectFit: "cover" }}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        navigate(
+                          `/movie/${movie?._id}?date=${moment().format(
+                            "YYYY-MM-DD"
+                          )}`
+                        );
+                      }}
+                    />
+                  )}
                   <h3
                     className="cursor-pointer"
                     onClick={() => {
                       navigate(
-                        `/movie/${movie._id}?date=${moment().format(
+                        `/movie/${movie?._id}?date=${moment().format(
                           "YYYY-MM-DD"
                         )}`
                       );
                     }}
                   >
-                    {movie.title}
+                    {movie?.title}
                   </h3>
                 </div>
               </Col>

@@ -30,7 +30,7 @@ const MovieForm = ({
             } else {
                 response = await updateMovie({ ...values, movieId: selectedMovie._id });
             }
-            if (response.success) {
+            if (response?.success) {
                 getData();
                 message.success(response.message);
                 setIsModalOpen(false);

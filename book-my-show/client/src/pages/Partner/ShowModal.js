@@ -32,6 +32,7 @@ const ShowModal = ({
   isShowModalOpen,
   setIsShowModalOpen,
   selectedTheatre,
+  setSelectedTheatre
 }) => {
   const [view, setView] = useState("table"); // vew can be table, add, edit
   const [movies, setMovies] = useState([]);
@@ -44,7 +45,7 @@ const ShowModal = ({
     try {
       dispatch(showLoading());
       const movieResponse = await getAllMovies();
-      if (movieResponse.success) {
+      if (movieResponse?.success) {
         setMovies(movieResponse.data);
       } else {
         message.error(movieResponse.message);
@@ -53,7 +54,7 @@ const ShowModal = ({
       const showResponse = await getShowsByTheatre({
         theatreId: selectedTheatre._id,
       });
-      if (showResponse.success) {
+      if (showResponse?.success) {
         setShows(showResponse.data);
       } else {
         message.error(showResponse.message);
@@ -96,13 +97,16 @@ const ShowModal = ({
 
   const handleCancel = () => {
     setIsShowModalOpen(false);
+    setSelectedShow(null);
+    setSelectedMovie(null);
+    setSelectedTheatre(null);
   };
 
   const handleDelete = async (showId) => {
     try {
       dispatch(showLoading());
       const response = await deleteShow({ showId: showId });
-      if (response.success) {
+      if (response?.success) {
         message.success(response.message);
         getData();
       } else {
@@ -142,7 +146,7 @@ const ShowModal = ({
       dataIndex: "movie",
       key: "movie",
       render: (text, data) => {
-        return data.movie.title;
+        return data?.movie?.title;
       },
     },
     {
@@ -199,10 +203,11 @@ const ShowModal = ({
       },
     },
   ];
-  console.log("selectedShow ", selectedShow)
-  console.log("selectedMovie ", selectedMovie)
+  // console.log("selectedShow ", selectedShow)
+  // console.log("selectedMovie ", selectedMovie)
   useEffect(() => {
     getData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

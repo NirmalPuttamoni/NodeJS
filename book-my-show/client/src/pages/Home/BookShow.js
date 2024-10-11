@@ -5,45 +5,97 @@ import { hideLoading, showLoading } from "../../redux/loaderSlice";
 import { Button, Card, Col, message, Row } from "antd";
 import { getShowById } from "../../api/shows";
 import moment from "moment";
+import Loader from "../Loader";
+import StripeCheckout from "react-stripe-checkout";
+import { bookShow, makePayment } from "../../api/bookings";
+// import { StripeCheckout } from '@stripe/react-stripe-js';
 
 const BookShow = () => {
-  const user = useSelector((state) => state.users);
+  const {user} = useSelector((state) => state.users);
+  // console.log("user " , user)
+  const loading = useSelector((state) => state.loaders);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [show, setShow] = useState();
   const [selectedSeats, setSelectedSeats] = useState([]);
   const params = useParams();
+  const stripeAPIKey =
+    "pk_test_51Q7ezmLF4gjWytmzhreCwQ1O2jCVQ0aFQNOSEXA8COADOH9VsvwKWv2nxIVSupj73eGiDOWcXixnfMzMvTwKpYDM00YvefVN13";
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const getData = async () => {
     try {
       dispatch(showLoading());
-      const response = await getShowById({ showId: params.id });
-      console.log("response ", response);
-      if (response.success) {
+      const response = await getShowById({ showId: params?.id });
+      // console.log("response ", response);
+      if (response?.success) {
         setShow(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       } else {
-        message.error(response.message);
+        message.error(response?.message);
       }
       dispatch(hideLoading());
     } catch (err) {
-      message.error(err.message);
+      message.error(err?.message);
     }
   };
+
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const book = async (transactionId) => {
+    try {
+      dispatch(showLoading());
+      const response = await bookShow({
+        show: params.id,
+        user: user._id,
+        seats: selectedSeats,
+        transactionId,
+      });
+      dispatch(hideLoading());
+      if (response?.success) {
+        message.success(response.message);
+        navigate("/profile");
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  const onToken = async (token) => {
+    console.log(token);
+    try {
+      dispatch(showLoading());
+      const response = await makePayment(token, totalPrice);
+      if (response?.success) {
+        message.success(response.message);
+        book(response.data);
+        console.log(response);
+      } else {
+        message.error(response.message);
+        dispatch(hideLoading());
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    setTotalPrice(selectedSeats?.length * show?.ticketPrice);
+  }, [selectedSeats, show]);
+
   const getSeats = () => {
     const columns = 12;
-    const totalSeats = 120;
-    const rows = totalSeats / columns;
+    const totalSeats = show.totalSeats;
+    const rows = Math.ceil(totalSeats / columns);
 
     return (
       <div className="d-flex flex-column align-items-center">
         <div className="w-100 max-width-600 mx-auto mb-25px">
           <p className="text-center mb-10px">All eyes this way please!</p>
-          <div className="screen-div">
-          </div>
+          <div className="screen-div"></div>
         </div>
         <ul className="seat-ul justify-content-center">
           {Array.from(Array(rows).keys()).map((row) =>
@@ -51,10 +103,10 @@ const BookShow = () => {
               let seatNumber = row * columns + column + 1;
               // console.log("seats", seatNumber);
               let seatClass = "seat-btn"; //default class for seat btn
-              if (selectedSeats.includes(seatNumber)) {
+              if (selectedSeats?.includes(seatNumber)) {
                 seatClass += " selected"; // "seat-btn selected"
               }
-              if (show?.bookedSeats.includes(seatNumber)) {
+              if (show?.bookedSeats?.includes(seatNumber)) {
                 seatClass += " booked";
               }
               // console.log("totalSeats", totalSeats);
@@ -78,8 +130,8 @@ const BookShow = () => {
                     </Button>
                   </li>
                 );
-              }else{
-                return (<></>)
+              } else {
+                return null;
               }
             })
           )}
@@ -89,8 +141,7 @@ const BookShow = () => {
             Selected Seats: <span>{selectedSeats?.join(", ")}</span>
           </div>
           <div>
-            Total Price:{" "}
-            <span>Rs. {selectedSeats?.length * show?.ticketPrice}</span>
+            Total Price: <span>Rs. {totalPrice}</span>
           </div>
         </div>
       </div>
@@ -98,6 +149,7 @@ const BookShow = () => {
   };
   return (
     <>
+      {loading && <Loader />}
       {show && (
         <Row gutter={24}>
           <Col span={24}>
@@ -131,6 +183,20 @@ const BookShow = () => {
               }
             >
               {getSeats()}
+              {selectedSeats.length > 0 && (
+                <StripeCheckout
+                  token={onToken}
+                  // billingAddress
+                  amount={totalPrice * 100}
+                  stripeKey={stripeAPIKey}
+                >
+                  <div className="max-width-600 mx-auto">
+                    <Button type="primary" shape="round" size="large" block>
+                      Pay Now
+                    </Button>
+                  </div>
+                </StripeCheckout>
+              )}
             </Card>
           </Col>
         </Row>
