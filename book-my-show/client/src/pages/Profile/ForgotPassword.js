@@ -27,7 +27,7 @@ function Forgot() {
     if (localStorage.getItem("token")) {
       navigate("/");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
@@ -62,12 +62,10 @@ function Forgot() {
                   SEND OTP
                 </Button>
               </Form.Item>
-            </Form>
-            <div>
-              <p>
+              <Form.Item>
                 Existing User? <Link to="/login">Login Here</Link>
-              </p>
-            </div>
+              </Form.Item>
+            </Form>
           </section>
         </main>
       </header>

@@ -22,6 +22,7 @@ async function EmailHelper(templateName, receiverEmail, creds) {
       to: receiverEmail,
       from: "puttamoninirmal01@gmail.com",
       text: `Hi ${creds.name}, your otp is ${creds.otp}`,
+      subject: templateName==="otp.html" ? "OTP Verification" : "Movie Booking",
       html: replaceContent(content, creds),
     };
     const transportDetails = {
