@@ -30,8 +30,8 @@ const deleteShow = async (req, res) => {
 
 const updateShow = async (req, res) => {
   const id = req?.params?.id;
-  console.log("id", id);
-  console.log("body", req.body);
+  // console.log("id", id);
+  // console.log("body", req.body);
   try {
     if (!id || !mongoose.isValidObjectId(id)) {
       return res

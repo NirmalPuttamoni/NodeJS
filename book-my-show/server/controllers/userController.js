@@ -2,10 +2,11 @@ const User = require("../models/userModel");
 const secret_key = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 const EmailHelper = require("../utils/emailHelper");
+const bcrypt = require("bcrypt");
 
 const createUser = async (req, res) => {
   const body = req.body;
-  console.log(body);
+  // console.log(body);
   try {
     if (body.password !== body.confirm_password) {
       return res.send({
@@ -26,7 +27,15 @@ const createUser = async (req, res) => {
     //     password: body.password,
     //     isAdmin: body.isAdmin
     // });
-    const newUser = await new User(body).save();
+
+    //hash the password
+    const saltRounds = 10; // higher the number , the more secure but slower the hashing process
+    const hashedPassword = await bcrypt.hash(body.password, saltRounds);
+
+    const newUser = await new User({
+      ...body,
+      password: hashedPassword,
+    }).save();
     res.send({
       message: `User ${body.name} created`,
       success: true,
@@ -54,21 +63,29 @@ const loginUser = async (req, res) => {
         .status(401)
         .send({ success: false, message: `User ${body.email} does not exist` });
     }
-    if (existingUser.password !== body.password) {
-      return res.status(401).send({
-        success: false,
-        message: "Invalid password!",
-      });
-    }
+    // if (existingUser.password !== body.password) {
+    //   return res.status(401).send({
+    //     success: false,
+    //     message: "Invalid password!",
+    //   });
+    // }
+    const isMatch = await bcrypt.compare(body.password, existingUser.password);
     const token = jwt.sign({ userId: existingUser._id }, secret_key, {
       expiresIn: "10h",
     });
     // console.log("token ", token)
-    res.status(200).json({
-      success: true,
-      message: `User ${existingUser.name} logged in successfully`,
-      token: token,
-    });
+    if (isMatch) {
+      res.status(200).json({
+        success: true,
+        message: `User ${existingUser.name} logged in successfully`,
+        token: token,
+      });
+    } else {
+      res.status(401).send({
+        success: false,
+        message: "Invalid password!",
+      });
+    }
   } catch (error) {
     res.status(500).json({ message: `Internal server error ${error.message}` });
   }

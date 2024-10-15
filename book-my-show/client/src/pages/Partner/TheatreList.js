@@ -81,7 +81,6 @@ const TheatreList = () => {
       dataIndex: "action",
       key: "action",
       render: (text, data) => {
-        console.log("data ", data);
         return (
           <div>
             <Button

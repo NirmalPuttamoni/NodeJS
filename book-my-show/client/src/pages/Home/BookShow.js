@@ -67,14 +67,14 @@ const BookShow = () => {
   };
 
   const onToken = async (token) => {
-    console.log(token);
+    // console.log(token);
     try {
       dispatch(showLoading());
       const response = await makePayment(token, totalPrice);
       if (response?.success) {
         message.success(response.message);
         book(response.data);
-        console.log(response);
+        // console.log(response);
       } else {
         message.error(response.message);
         dispatch(hideLoading());

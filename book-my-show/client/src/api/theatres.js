@@ -38,7 +38,7 @@ export const getAllTheatres = async (ownerId) => {
 };
 
 export const updateTheatre = async (payload) => {
-    console.log("payload==============", payload)
+    // console.log("payload==============", payload)
   try {
     const response = await axiosInstance.put(
       "/api/theatres/update-theatre",

@@ -10,7 +10,7 @@ const Register = () => {
   const onFinish = async (values) => {
     try {
       const response = await RegisterUser(values);
-      console.log("response : ", response);
+      // console.log("response : ", response);
       if (response?.success) {
         //success
         message.success(response.message);

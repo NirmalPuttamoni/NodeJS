@@ -1,7 +1,7 @@
 import axiosInstance from ".";
 
 export const makePayment = async (token, amount) => {
-    console.log("token ", token)
+    // console.log("token ", token)
   try {
     const response = await axiosInstance.post("/api/bookings/make-payment", {
       token,
@@ -15,7 +15,7 @@ export const makePayment = async (token, amount) => {
 
 export const bookShow = async (payload) => {
   try {
-    console.log(payload)
+    // console.log(payload)
     const response = await axiosInstance.post(
       "/api/bookings/book-show",
       payload
